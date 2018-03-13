@@ -3,10 +3,9 @@ var app = express();
 var path = require('path');
 var routes = require('../routes.js')(app);
 var port = 8000;
-var wrFile = require('../src/wrFile').write;
+var fs = require('fs');
 
 app.use(express.static(path.join('public'))); /* 將預設路徑設在public*/
-
 
 app.get('/', function (req, res) { //靜態網頁
   res.sendFile('index.html');
@@ -14,7 +13,15 @@ app.get('/', function (req, res) { //靜態網頁
 
 
 app.get('/test', function (req, res) {
-  res.send(require('../public/test.json'));
+  fs.readFile('./public/test.json', function (err, data) {
+    res.end( data );
+  });
+});
+
+app.get('/stat', function (req, res) {
+  fs.readdir('./public', (err, files) => {
+    console.log(files);
+  });
 });
 
 app.listen(port,() => console.log(`listening on ${port}`));
